@@ -35,6 +35,7 @@ transfers. The experiment does not establish a production trust boundary.
 - [Protocol, assumptions and limitations](docs/CONTEST-PROTOCOL.md)
 - [Test instructions](docs/TESTING.md)
 - [Original proposal](docs/DESIGN.md)
+- [Completed public-signet report](reports/2026-10-06-signet.md)
 - [Initial opening-only report](reports/2026-10-05.md)
 
 ```sh

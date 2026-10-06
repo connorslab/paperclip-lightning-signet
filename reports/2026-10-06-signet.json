@@ -1,0 +1,116 @@
+{
+  "network": "public-paperclip-signet",
+  "node_commit": "2f142fdd75719d23046be5b1577fc9ef280f3dc3",
+  "node_binary_sha256": "1340e4a268dc24d2ee43288d725113481b3c579974ae0ef1bb9353fff346e0c0",
+  "chain_height": 470,
+  "transactions": {
+    "funding": {
+      "txid": "50ed7545930d9a8e22d15f3eae3569aab1a26f238dd132c6e01c9c30ff23db09",
+      "block": "75c0e6be2b03eede332434b8f8a41bbaf78dfa6cdbc40c7956d081cf38683b8b",
+      "height": 456,
+      "confirmations": 15,
+      "vsize": 296,
+      "outputs": [
+        {
+          "sats": 301000,
+          "script": "51200616c95bfb001a17ce8cc9bee6a9b6a980735b96da4688522e042760901477bd"
+        },
+        {
+          "sats": 1000,
+          "script": "00145563f4fe7d7393b608368cca71a2235969804206"
+        },
+        {
+          "sats": 2000,
+          "script": "001493be68c93fad9f9d9a7e7839804ab78a828f3e2f"
+        },
+        {
+          "sats": 3997594886,
+          "script": "76a9140cc6b49921b60ff0c4287c85d52f502250c21c0e88ac"
+        }
+      ]
+    },
+    "stale": {
+      "txid": "fc59137cc9f2e540969f93dcdd664721673ad0f067a19438324938c845731897",
+      "block": "38981a7f5716cf7e3f528623f8e1a937e871d86be2e01626d14edd578b209c8c",
+      "height": 457,
+      "confirmations": 14,
+      "vsize": 257,
+      "outputs": [
+        {
+          "sats": 301000,
+          "script": "51203766e109e030bcac3550b94df799bc73406bee3bcf869d3daa4b636280b74fbf"
+        }
+      ]
+    },
+    "override": {
+      "txid": "81a485e5f8e06a625db392862befd92e5fb6788163500df764ad3c18e17ef3d8",
+      "block": "3deda9b11ba2623e33abba77f24d8dbbfedbdfcf51e1b38c9f412d5515eda4ae",
+      "height": 458,
+      "confirmations": 13,
+      "vsize": 257,
+      "outputs": [
+        {
+          "sats": 301000,
+          "script": "5120d6a0e664a1a336003921d781aedad5e389fbc2b05525e92d56b0805df0205135"
+        }
+      ]
+    },
+    "settlement": {
+      "txid": "db695e177a0c7d8acae5e764f78f73a467dbaf774fdc6160695d6ef212f5beec",
+      "block": "18069f0ed876377c412cf8b6bc5f5c54fea7ebfc3aa86ff3448c4226355b0f63",
+      "height": 470,
+      "confirmations": 1,
+      "vsize": 171,
+      "outputs": [
+        {
+          "sats": 95000,
+          "script": "00147dbe578207c8a8df45a0dd6ba466341f1ef80668"
+        },
+        {
+          "sats": 103000,
+          "script": "00144cb813eb307bf0c16b697e40018666a81126146e"
+        },
+        {
+          "sats": 102000,
+          "script": "001425bf63bb6654f5fd145e341305f490ee4691db0a"
+        }
+      ]
+    }
+  },
+  "states": [
+    {
+      "balances": [
+        100000,
+        100000,
+        100000
+      ],
+      "number": 0
+    },
+    {
+      "balances": [
+        95000,
+        100000,
+        105000
+      ],
+      "number": 1
+    },
+    {
+      "balances": [
+        95000,
+        103000,
+        102000
+      ],
+      "number": 2
+    }
+  ],
+  "funding_fee_sats": 296,
+  "fees": {
+    "stale_update": 1000,
+    "override": 2000,
+    "settlement": 1000
+  },
+  "contest_blocks": 12,
+  "fresh_channel_signatures_needed_for_exit": false,
+  "bolt_payments_tested": false,
+  "settlement_confirmed": true
+}
