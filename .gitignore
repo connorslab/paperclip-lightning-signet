@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.venv/
+build/
+dist/
+*.egg-info/
+.env*
+private/
+runtime/
+*.sqlite*
+*.pem
+*.key
+*.cookie
+hsm_secret
+wallet.dat
+signer.hex
+*.log
