@@ -1,55 +1,51 @@
 # Paperclip Lightning Exchange Point
 
-Private experimental project for a **Bitcoin signet Lightning exchange point
-(LXP)**: independent routing nodes share a multi-party channel while retaining
-their external two-party Lightning channels.
+Experimental **three-party Bitcoin shared-balance channel** for Paperclip's
+covenant signet. This is development software, not a deployed Lightning router
+or a wallet for real funds.
 
-Active development: `experiment/lightning-exchange-point`.
+The contest-channel prototype supports two off-chain allocation changes and a
+unilateral exit to the latest signed allocation. An older state can be published,
+but a participant can supersede it during a **12-block contest window**. The
+latest payout then waits its own 12-block delay. Participants must monitor the
+chain (or delegate monitoring) and keep fee-paying coins available.
 
-This is a from-scratch proposal, not an implementation of an established LXP
-standard. It is not a deployed Lightning service or a wallet for real funds.
-The initial branch contains a shared-balance/conditional-payment model, a
-read-only signet backend check, and a three-party covenant-spend experiment.
-It does not yet route BOLT payments or invalidate stale signed states. The first
-funded experiment includes a timelocked unilateral exit to the opening allocation.
-Funded balance updates are blocked until latest-state recovery is proven. A
-cooperative spend is not proof of a safe payment channel.
+**Not yet implemented:** BOLT invoice/routing integration, on-chain HTLCs,
+dynamic membership, autonomous production watchtowers, or production key custody.
+The original in-memory HTLC model remains a simulation. It must not authorize
+funded conditional payments.
 
-## Working design
+## What is implemented
 
-Three independent routing nodes start with a shared Bitcoin output. Their
-off-chain state tracks each member's balance and conditional transfers. An
-optional coordinator proposes updates but must never be able to authorize a
-spend alone. External Lightning channels remain owned by their individual
-operators. This is not a currency exchange or a channel-opening marketplace.
+- Three independent signing processes and separate participant journals.
+- Durable recovery information before funding and before releasing signatures.
+- TEMPLATEHASH + three CSFS signatures authorizing each allocation update.
+- Increasing state numbers enforced by CLTV; CSV delays final payouts.
+- An external, unified-sighash-signed fee input for each update/override.
+- Restart recovery without fresh channel signatures, refusal to sign conflicting
+  states, rejection of incomplete signature sets, and reorg/maturity tests.
+- A supervised, resumable public-signet demonstration with fresh test keys.
 
-The test backend is Paperclip's
-[Bitcoin covenant signet](https://github.com/connorslab/paperclip-bitcoin-signet),
-with TEMPLATEHASH, CSFS and the default **32-byte CSFS message cap**. Default
-Knots/RDTS rules remain requirements. No changes to the pool, existing Lightning
-services, public signet consensus or production wallets are part of this repo.
+These are three processes on one operator-controlled host, not three independently
+administered nodes. The test coordinator explicitly approves the demonstration's
+transfers. The experiment does not establish a production trust boundary.
 
-## First milestones
+## Run and understand it
 
-1. Test accounting, three-party authorization and unilateral opening-state
-   recovery on private regtest, without counterparty signatures at exit time.
-2. Extend recovery to the latest state; prove stale-state replacement and crash recovery
-   before enabling any funded balance updates.
-3. Integrate an isolated Core Lightning adapter with test peers and test invoices.
-4. Exercise failure cases on private regtest, then publish test transactions on
-   the existing public signet using dedicated test keys and coins.
-
-Public signet deployment is gated on milestone 2. Do not equate passing the
-initial primitive tests with a completed multi-party Lightning implementation.
-
-## On the experiment branch
+- [Protocol, assumptions and limitations](docs/CONTEST-PROTOCOL.md)
+- [Test instructions](docs/TESTING.md)
+- [Original proposal](docs/DESIGN.md)
+- [Initial opening-only report](reports/2026-10-05.md)
 
 ```sh
-python -m unittest discover -s tests -v
-python -m paperclip_lxp.demo
+python3 -m unittest discover -s tests -v
+python3 -m paperclip_lxp.demo
 ```
 
-See `docs/DESIGN.md` for the proposed architecture, `docs/TESTING.md` for the
-isolated chain test, and `dependencies.lock.json` for the pinned node source.
-No credentials, node identities, wallet files or private runtime state belong
-in this repository.
+The chain experiments additionally require the Bitcoin node's functional-test
+Python modules. See `dependencies.lock.json` for source revisions. The historical
+opening-only experiment remains as a regression demonstration of why fixed
+opening refunds cannot safely support balance updates.
+
+Development branch: `experiment/lightning-exchange-point`.
+All runtime files, keys and RPC credentials must stay outside this repository.

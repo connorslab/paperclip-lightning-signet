@@ -15,3 +15,7 @@ hsm_secret
 wallet.dat
 signer.hex
 *.log
+secret.hex
+key-backup.json
+fee-keys.json
+experiment.json

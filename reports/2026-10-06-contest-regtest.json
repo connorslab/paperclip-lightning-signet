@@ -1,0 +1,24 @@
+{
+  "contest_blocks": 12,
+  "equivocation_rejected": true,
+  "funding": "433fcfdd547d16e29426d86a9f08f23fc40fd1c60206651c7fac103170605795",
+  "incomplete_signatures_rejected": true,
+  "interrupted_round_recovery": true,
+  "latest_balances": [
+    95000,
+    103000,
+    102000
+  ],
+  "latest_override": "487ef6a8debefcf2ab625d8ea0bfdace9fb421d917809bf525ee89314c56abc5",
+  "maturity_reorg_test": true,
+  "network": "private-regtest",
+  "no_fresh_channel_signatures": true,
+  "payments_are_bolt": false,
+  "restart_recovery": true,
+  "settlement": "8de1cfac50671031687e19a5b73b081708024274d816653676132a30d4c1be26",
+  "stale_mempool_settlement_replaced": true,
+  "stale_mempool_update_replaced": true,
+  "stale_state_rejected": true,
+  "stale_update": "cc7712cb589f66c7bd4ed9fda33db6fb00401f64e41b8573bbc36effe22bbe31",
+  "unified_fee_signature": true
+}

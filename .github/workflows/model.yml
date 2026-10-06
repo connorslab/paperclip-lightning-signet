@@ -12,3 +12,11 @@ jobs:
           python-version: '3.12'
       - run: python -m unittest discover -s tests -v
       - run: python -m paperclip_lxp.demo
+      - name: Fetch pinned test-framework dependency
+        run: |
+          git init "$RUNNER_TEMP/bitcoin"
+          git -C "$RUNNER_TEMP/bitcoin" remote add origin https://github.com/connorslab/paperclip-bitcoin-signet
+          git -C "$RUNNER_TEMP/bitcoin" fetch --depth 1 origin 7d365603415422bf5f71bbae6ad9b54cb038471e
+          git -C "$RUNNER_TEMP/bitcoin" checkout --detach FETCH_HEAD
+      - name: Channel and signer tests (no node)
+        run: PYTHONPATH=.:"$RUNNER_TEMP/bitcoin/test/functional" python -m unittest discover -s tests_chain -v

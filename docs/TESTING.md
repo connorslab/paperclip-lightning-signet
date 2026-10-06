@@ -1,64 +1,94 @@
-# Running the initial tests
+# Running the development tests
 
-Only disposable private regtest is authorized by the provided chain runner.
-It cannot select mainnet or public signet. It creates a new data directory and
-refuses an existing one. It does not touch any existing node or Lightning daemon.
+No mainnet funds, production node directories or production keys are supported.
+The scripts never start a mainnet node, trigger IBD or restart an existing service.
 
-## Model and network guards
+## Fast tests
 
 ```sh
 python3 -m unittest discover -s tests -v
 python3 -m paperclip_lxp.demo
+PYTHONPATH=.:/path/to/bitcoin/test/functional python3 -m unittest discover -s tests_chain -v
 ```
 
-These tests do not connect to a node. They cover conservation, held balances,
-preimages, timeouts, duplicate resolution, proposal sequence mismatches,
-context-separated commitments, wrong network/challenge rejection, and blocking
-funded updates. They do not prove channel cryptography or Lightning routing.
+The first ten tests cover the original accounting model. The five chain-library
+unit tests cover template binding, signer authorization, journals and exit
+construction. They do not run consensus validation. GitHub CI runs these two
+suites; actual chain results are recorded separately in reports.
 
-## Real node test
+## Private regtest
 
-Build the exact node revision from `dependencies.lock.json`. From this repo:
+Build the source revision in `dependencies.lock.json`, or use an already-built
+compatible experimental node with an explicit functional-test config:
 
 ```sh
 python3 scripts/run_regtest.py \
   --node-source=/path/to/paperclip-bitcoin-signet \
-  --tmpdir=/tmp/paperclip-lxp-regtest-new \
-  --results=/tmp/paperclip-lxp-results-new.json
+  --experiment=contest \
+  --tmpdir=/tmp/lxp-regtest-new \
+  --results=/tmp/lxp-results-new.json
 ```
 
-The test uses the node's existing functional-test framework, mines disposable
-regtest coins, checks three-party authorization, broadcasts a cooperative
-settlement, and tests a separate unilateral opening-state exit. The exit is
-rebuilt from a recovery file after a node restart and without further signer
-calls. It must fail before the delay, reject altered output allocations and
-pay all three opening balances after the delay. The test verifies the mined
-outputs and restarts/verifies the chain again.
+`--configfile=/path/to/test/config.ini` overrides the usual build/test/config.ini.
+The runner refuses existing result and data paths. This launches one isolated
+private-regtest node. It tests:
 
-The test also confirms the current limitation: old and revised fully signed
-cooperative states are both valid before either spends the funding output.
-This is an expected blocker assertion, not a successful latest-state protocol.
-There are no participant network daemons yet, so this is proof of recovery
-without counterparty signatures, not a full disconnected-peer integration test.
+- Three signing subprocesses with independent journals and explicit approvals.
+- Missing signatures, altered outputs, equivocation and an interrupted later round.
+- Replacement of a stale update in the mempool using a higher fee input.
+- A confirmed stale state, followed by latest-state recovery after restart.
+- A stale settlement in the mempool, replaced before confirmation (best effort).
+- Consensus rejection of an older update spending a newer state output.
+- CSV exit timing, a shallow reorg across maturity, and final output amounts.
+- Unified-sighash fee signatures; no fresh participant channel signatures at exit.
 
-All keys in this harness are deterministic and public test fixtures. Never run
-it against an existing funded wallet or reuse these keys on public signet.
-The report contains only public regtest transaction IDs and boolean results.
+`--experiment=opening` runs the historical opening-only regression. Its cooperative
+allocation path is deliberately unsafe for updated balances and remains disabled
+in the old funded-model API. Use the new contest-channel module for dev experiments.
 
-## Read-only public backend check
+## Supervised public signet demonstration
 
-For an existing dedicated signet node, without starting a node or syncing:
+Use an existing synchronized Paperclip covenant-signet backend. Genesis alone
+is insufficient: the script verifies the exact signet challenge. RPC stays private.
+The public signet's historical running binary is recorded separately from the
+recommended newer source revision. Neither service upgrades nor policy changes
+are performed by this demonstration.
 
 ```sh
-python3 -m paperclip_lxp.probe \
-  --bitcoin-cli=/path/to/bitcoin-cli --datadir=/existing/signet/datadir
+export PYTHONPATH=.:/path/to/bitcoin/test/functional
+RPC='["bitcoin-cli","-datadir=/existing/signet/datadir"]'
+RUNTIME=/private/path/outside/this/repository
+python3 -m scripts.signet_demo prepare --runtime "$RUNTIME" --rpc-command "$RPC" --funding-wallet faucet
+# Wait for the funding transaction to confirm.
+python3 -m scripts.signet_demo agree --runtime "$RUNTIME" --rpc-command "$RPC"
+python3 -m scripts.signet_demo stale --runtime "$RUNTIME" --rpc-command "$RPC"
+# A bounded watcher follows actual confirmed spends and recovers the latest state.
+python3 -m scripts.watch --runtime "$RUNTIME" --rpc-command "$RPC" --max-seconds 1800
 ```
 
-This only calls getblockchaininfo, getblockhash and getblocktemplate. It does
-not fund the experiment, broadcast, create a wallet or attest Lightning readiness.
+The selected funding wallet must already be loaded and contain spendable test
+coins. Preparation uses 304,000 test sats plus a 1 sat/vB funding fee, with a
+10,000-sat maximum funding-fee guard. It saves recovery material before broadcasting.
+The run uses a single faucet-funded output; it is not a three-party atomic funding
+protocol. Two signed allocations change 100,000/100,000/100,000 into
+95,000/100,000/105,000, then 95,000/103,000/102,000.
 
-## Release gate
+The deliberate stale broadcast is a test action, not normal operation. `recover`
+is a single watcher iteration; `status` shows current UTXO observations.
+`resume-funding` reuses the prepared funding transaction after an interrupted
+broadcast. Do not create a new runtime to retry a run that already has an
+experiment.json file. Preserve the private runtime and its participant backups.
 
-No public signet LXP funding/peering until latest-state unilateral recovery,
-pending-payment recovery, fee pressure, crash/reorg handling and independent
-participant signer integration have passed. No production deployment is included.
+The watcher is bounded, uses polling and exits visibly on errors. It rescans from
+the funding block to avoid trusting a cached state after reorgs. A production
+watchtower, congestion handling, multiple fee reserves and deep-reorg recovery
+remain future work. Keep supervising the experiment until its exit is confirmed.
+The test leaves payout coins at the three generated participant addresses; their
+keys stay in the private runtime. Never publish that directory.
+
+## Scope of evidence
+
+This proves a bounded development shared-balance contract can open, update and
+exit on the experimental network. It does not prove BOLT interoperability, pending
+HTLC recovery, independent administrative isolation, atomic multi-party funding,
+unbounded offline safety, adversarial fee-market liveness or production security.

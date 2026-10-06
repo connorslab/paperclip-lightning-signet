@@ -1,5 +1,9 @@
 # LXP v0: proposed architecture
 
+Historical opening-only design. The newer contest-channel implementation and its
+current limitations are described in [CONTEST-PROTOCOL.md](CONTEST-PROTOCOL.md).
+The fixed-opening warning below still applies to the original primitive.
+
 Status: original research prototype. No standardized LXP wire protocol is
 claimed. Bitcoin/BTC terminology is used throughout.
 

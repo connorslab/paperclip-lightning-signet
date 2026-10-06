@@ -5,6 +5,12 @@
     "commit": "7d365603415422bf5f71bbae6ad9b54cb038471e",
     "build": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_GUI=OFF -DBUILD_BENCH=OFF -DENABLE_IPC=OFF -DWITH_BDB=OFF"
   },
-  "lightning_adapter": {"status": "not implemented; no CLN version selected for deployment"},
-  "python": ">=3.11; standard library only for the model"
+  "lightning_adapter": {
+    "status": "not implemented; no CLN version selected for deployment"
+  },
+  "python": ">=3.11; standard library only for the model",
+  "tested_public_signet_node": {
+    "commit": "2f142fdd75719d23046be5b1577fc9ef280f3dc3",
+    "note": "Existing public node and private contest regtest binary. Older than recommended source; lacks configurable CSFS cap. No upgrade performed. All experiment messages are 32 bytes."
+  }
 }
