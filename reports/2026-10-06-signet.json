@@ -1,5 +1,5 @@
 {
-  "network": "public-paperclip-signet",
+  "network": "experimental-signet",
   "node_commit": "2f142fdd75719d23046be5b1577fc9ef280f3dc3",
   "node_binary_sha256": "1340e4a268dc24d2ee43288d725113481b3c579974ae0ef1bb9353fff346e0c0",
   "chain_height": 470,
