@@ -10,8 +10,10 @@ This is a from-scratch proposal, not an implementation of an established LXP
 standard. It is not a deployed Lightning service or a wallet for real funds.
 The initial branch contains a shared-balance/conditional-payment model, a
 read-only signet backend check, and a three-party covenant-spend experiment.
-It does not yet route BOLT payments, invalidate stale signed states, or provide
-unilateral exits. A cooperative spend is not proof of a safe payment channel.
+It does not yet route BOLT payments or invalidate stale signed states. The first
+funded experiment includes a timelocked unilateral exit to the opening allocation.
+Funded balance updates are blocked until latest-state recovery is proven. A
+cooperative spend is not proof of a safe payment channel.
 
 ## Working design
 
@@ -29,8 +31,10 @@ services, public signet consensus or production wallets are part of this repo.
 
 ## First milestones
 
-1. Test accounting and the three-party authorization primitive on private regtest.
-2. Specify and prove stale-state replacement, unilateral exits and crash recovery.
+1. Test accounting, three-party authorization and unilateral opening-state
+   recovery on private regtest, without counterparty signatures at exit time.
+2. Extend recovery to the latest state; prove stale-state replacement and crash recovery
+   before enabling any funded balance updates.
 3. Integrate an isolated Core Lightning adapter with test peers and test invoices.
 4. Exercise failure cases on private regtest, then publish test transactions on
    the existing public signet using dedicated test keys and coins.
